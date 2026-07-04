@@ -1,6 +1,6 @@
 {
-  "name": "Calcolatore Ricarico",
-  "short_name": "Ricarico Pro",
+  "name": "Calcolatore Pro",
+  "short_name": "Calcolatore Pro",
   "start_url": "index.html",
   "display": "standalone",
   "background_color": "#f0f4f8",
