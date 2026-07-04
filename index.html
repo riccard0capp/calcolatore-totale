@@ -23,6 +23,10 @@
             --md-ricarico-primary: #2e7d32;
             --md-ricarico-container: #c8e6c9;
             --md-on-ricarico-container: #002105;
+
+            --md-scopri-primary: #b06000;
+            --md-scopri-container: #ffddb6;
+            --md-on-scopri-container: #381b00;
         }
 
         * {
@@ -53,7 +57,7 @@
             position: relative;
         }
 
-        /* Schermata Iniziale di Scelta (Hub) */
+        /* Schermata Iniziale (Hub) */
         .hub-screen {
             display: flex;
             flex-direction: column;
@@ -75,7 +79,7 @@
         .hub-subtitle {
             font-size: 15px;
             color: var(--md-on-surface-variant);
-            margin-bottom: 40px;
+            margin-bottom: 32px;
         }
 
         .hub-options {
@@ -87,18 +91,18 @@
         }
 
         .hub-btn {
-            height: 90px;
+            height: 84px;
             border: none;
             border-radius: 16px;
-            font-size: 18px;
+            font-size: 17px;
             font-weight: 500;
             cursor: pointer;
             display: flex;
             align-items: center;
-            padding: 0 24px;
-            gap: 20px;
+            padding: 0 20px;
+            gap: 16px;
             box-shadow: 0 4px 12px rgba(0,0,0,0.05);
-            transition: transform 0.2s, box-shadow 0.2s;
+            transition: transform 0.2s;
         }
 
         .hub-btn:active {
@@ -115,11 +119,16 @@
             color: var(--md-on-ricarico-container);
         }
 
-        .hub-btn .material-symbols-rounded {
-            font-size: 36px;
+        .hub-btn-scopri {
+            background-color: var(--md-scopri-container);
+            color: var(--md-on-scopri-container);
         }
 
-        /* Schermata Calcolatore (Nascosta all'inizio) */
+        .hub-btn .material-symbols-rounded {
+            font-size: 32px;
+        }
+
+        /* Schermata Calcolatore */
         .calculator-screen {
             display: none;
             flex-direction: column;
@@ -127,7 +136,6 @@
             animation: fadeIn 0.3s ease;
         }
 
-        /* Bottone Indietro */
         .btn-back {
             position: absolute;
             top: 20px;
@@ -149,7 +157,7 @@
 
         .header {
             text-align: center;
-            margin-top: 30px; /* Lascia spazio al tasto indietro */
+            margin-top: 30px; 
             margin-bottom: 24px;
         }
 
@@ -171,7 +179,6 @@
             font-weight: 500;
         }
 
-        /* Input */
         .input-group {
             position: relative;
             margin-bottom: 20px;
@@ -243,7 +250,6 @@
             align-items: center;
         }
 
-        /* Bottoni Azione */
         .action-row {
             display: flex;
             gap: 8px;
@@ -355,10 +361,9 @@
 
 <div class="card" id="mainCard">
 
-    <!-- SCHERMATA 1: MENU INIZIALE (HUB) -->
     <div class="hub-screen" id="hubScreen">
         <div class="hub-title">Strumenti di Calcolo</div>
-        <div class="hub-subtitle">Cosa vuoi calcolare oggi?</div>
+        <div class="hub-subtitle">Scegli l'operazione da eseguire</div>
         
         <div class="hub-options">
             <button class="hub-btn hub-btn-sconto" onclick="avviaCalcolatore('sconto')">
@@ -370,12 +375,15 @@
                 <span class="material-symbols-rounded">trending_up</span>
                 <span>Calcola Ricarico</span>
             </button>
+
+            <button class="hub-btn hub-btn-scopri" onclick="avviaCalcolatore('scopri')">
+                <span class="material-symbols-rounded">find_in_page</span>
+                <span>Scopri lo Sconto</span>
+            </button>
         </div>
     </div>
 
-    <!-- SCHERMATA 2: IL CALCOLATORE DINAMICO -->
     <div class="calculator-screen" id="calculatorScreen">
-        <!-- Tasto torna al menu -->
         <button class="btn-back" onclick="tornaAlMenu()">
             <span class="material-symbols-rounded">arrow_back</span>
         </button>
@@ -387,26 +395,20 @@
             <h1 id="mainTitle">Calcolatore</h1>
         </div>
         
-        <!-- Input Principale -->
         <div class="input-group">
             <div class="input-container">
                 <input type="number" id="prezzoBase" inputmode="decimal" step="0.01" placeholder=" " required autocomplete="off">
-                <label id="lblPrezzoBase" for="prezzoBase">Prezzo</label>
+                <label id="lblPrezzoBase" for="prezzoBase">Prezzo di listino</label>
                 <span class="input-suffix">€</span>
             </div>
         </div>
 
-        <!-- Contenitore dinamico percentuali -->
-        <div id="dynamicInputsContainer">
-            <!-- Verrà riempito via JS all'avvio -->
-        </div>
+        <div id="dynamicInputsContainer"></div>
 
-        <!-- Bottone Aggiungi Cascata -->
         <button class="btn btn-add-dynamic" id="btnAddCascata" onclick="aggiungiCampoDinamico()">
-            <span class="material-symbols-rounded">add</span> Aggiungi ricarico a cascata
+            <span class="material-symbols-rounded">add</span> Aggiungi a cascata
         </button>
 
-        <!-- Bottoni Azione -->
         <div class="action-row">
             <button class="btn btn-secondary" onclick="cancellaTutto()">
                 <span class="material-symbols-rounded">delete</span> Svuota
@@ -416,7 +418,6 @@
             </button>
         </div>
 
-        <!-- Box Risultati -->
         <div class="result-box" id="resultBox">
             <div class="result-row">
                 <span id="resLabelIniziale">Iniziale:</span>
@@ -427,12 +428,11 @@
                 <span id="resValueVariazione">0,00 €</span>
             </div>
             <div class="result-row total">
-                <span>Prezzo finale:</span>
+                <span id="resLabelFinale">Prezzo finale:</span>
                 <span id="resValueFinale">0,00 €</span>
             </div>
         </div>
 
-        <!-- Cronologia -->
         <div class="history-section">
             <div class="history-title">
                 <span class="material-symbols-rounded" style="font-size: 18px;">history</span>
@@ -445,10 +445,11 @@
 </div>
 
 <script>
-    let modalitaCorrente = ''; // 'sconto' o 'ricarico'
+    let modalitaCorrente = ''; 
     
     let cronologiaSconto = JSON.parse(localStorage.getItem('combo_cronologiaSconto')) || [];
     let cronologiaRicarico = JSON.parse(localStorage.getItem('combo_cronologiaRicarico')) || [];
+    let cronologiaScopri = JSON.parse(localStorage.getItem('combo_cronologiaScopri')) || [];
 
     function avviaCalcolatore(modalita) {
         modalitaCorrente = modalita;
@@ -456,32 +457,38 @@
         const card = document.getElementById('mainCard');
         const hub = document.getElementById('hubScreen');
         const calc = document.getElementById('calculatorScreen');
+        const btnCascata = document.getElementById('btnAddCascata');
         
-        // Imposta grafica in base alla modalità scelta
+        btnCascata.style.display = 'block'; // Di default visibile
+
         if (modalitaCorrente === 'sconto') {
             card.style.setProperty('--active-primary', 'var(--md-primary)');
             card.style.setProperty('--active-container', 'var(--md-primary-container)');
             card.style.setProperty('--active-on-container', 'var(--md-on-primary-container)');
-            
             document.getElementById('headerIcon').innerText = 'payments';
             document.getElementById('mainTitle').innerText = 'Calcolatore Sconto';
             document.getElementById('lblPrezzoBase').innerText = 'Prezzo di listino';
-            document.getElementById('btnAddCascata').innerHTML = '<span class="material-symbols-rounded">add</span> Aggiungi sconto a cascata';
-        } else {
+            btnCascata.innerHTML = '<span class="material-symbols-rounded">add</span> Aggiungi sconto a cascata';
+        } else if (modalitaCorrente === 'ricarico') {
             card.style.setProperty('--active-primary', 'var(--md-ricarico-primary)');
             card.style.setProperty('--active-container', 'var(--md-ricarico-container)');
             card.style.setProperty('--active-on-container', 'var(--md-on-ricarico-container)');
-            
             document.getElementById('headerIcon').innerText = 'trending_up';
             document.getElementById('mainTitle').innerText = 'Calcolatore Ricarico';
             document.getElementById('lblPrezzoBase').innerText = 'Prezzo base';
-            document.getElementById('btnAddCascata').innerHTML = '<span class="material-symbols-rounded">add</span> Aggiungi ricarico a cascata';
+            btnCascata.innerHTML = '<span class="material-symbols-rounded">add</span> Aggiungi ricarico a cascata';
+        } else if (modalitaCorrente === 'scopri') {
+            card.style.setProperty('--active-primary', 'var(--md-scopri-primary)');
+            card.style.setProperty('--active-container', 'var(--md-scopri-container)');
+            card.style.setProperty('--active-on-container', 'var(--md-on-scopri-container)');
+            document.getElementById('headerIcon').innerText = 'find_in_page';
+            document.getElementById('mainTitle').innerText = 'Scopri lo Sconto Applicato';
+            document.getElementById('lblPrezzoBase').innerText = 'Prezzo di listino';
+            btnCascata.style.display = 'none'; // Nascondi bottone a cascata
         }
         
-        // Rigenera il primo input pulito
-        inizializzaInputPrincipale();
+        inizializzaCampiDinamici();
         
-        // Mostra la schermata calcolatore
         hub.style.display = 'none';
         calc.style.display = 'flex';
         
@@ -495,36 +502,52 @@
         document.getElementById('resultBox').style.display = 'none';
     }
 
-    function inizializzaInputPrincipale() {
+    function inizializzaCampiDinamici() {
         const container = document.getElementById('dynamicInputsContainer');
-        const labelTesto = modalitaCorrente === 'sconto' ? 'Percentuale sconto' : 'Percentuale ricarico';
         
-        container.innerHTML = `
-            <div class="input-group">
-                <div class="input-container">
-                    <input type="number" class="percentuale-input" inputmode="numeric" step="1" placeholder=" " required autocomplete="off" oninput="salvaPrimaPercentuale(this.value)">
-                    <label id="lblPercentuale">${labelTesto}</label>
-                    <span class="input-suffix">%</span>
+        if (modalitaCorrente === 'scopri') {
+            // Per scoprire lo sconto servono Prezzo di Listino e Prezzo Finale
+            container.innerHTML = `
+                <div class="input-group">
+                    <div class="input-container">
+                        <input type="number" id="prezzoFinaleInput" inputmode="decimal" step="0.01" placeholder=" " required autocomplete="off">
+                        <label for="prezzoFinaleInput">Prezzo scontato finale</label>
+                        <span class="input-suffix">€</span>
+                    </div>
                 </div>
-            </div>
-        `;
-        
-        // Carica eventuale valore salvato
-        const salvato = localStorage.getItem('combo_primaPercentuale_' + modalitaCorrente);
-        if (salvato !== null) {
-            document.querySelector('.percentuale-input').value = salvato;
+            `;
+        } else {
+            // Per Sconto e Ricarico standard
+            const labelTesto = modalitaCorrente === 'sconto' ? 'Percentuale sconto' : 'Percentuale ricarico';
+            container.innerHTML = `
+                <div class="input-group">
+                    <div class="input-container">
+                        <input type="number" class="percentuale-input" inputmode="numeric" step="1" placeholder=" " required autocomplete="off" oninput="salvaPrimaPercentuale(this.value)">
+                        <label id="lblPercentuale">${labelTesto}</label>
+                        <span class="input-suffix">%</span>
+                    </div>
+                </div>
+            `;
+            
+            const salvato = localStorage.getItem('combo_primaPercentuale_' + modalitaCorrente);
+            if (salvato !== null) {
+                document.querySelector('.percentuale-input').value = salvato;
+            }
         }
     }
 
     function salvaPrimaPercentuale(valore) {
-        if (valore !== "") {
-            localStorage.setItem('combo_primaPercentuale_' + modalitaCorrente, valore);
-        } else {
-            localStorage.removeItem('combo_primaPercentuale_' + modalitaCorrente);
+        if (modalitaCorrente !== 'scopri') {
+            if (valore !== "") {
+                localStorage.setItem('combo_primaPercentuale_' + modalitaCorrente, valore);
+            } else {
+                localStorage.removeItem('combo_primaPercentuale_' + modalitaCorrente);
+            }
         }
     }
 
     function aggiungiCampoDinamico() {
+        if (modalitaCorrente === 'scopri') return;
         const container = document.getElementById('dynamicInputsContainer');
         const labelTesto = modalitaCorrente === 'sconto' ? 'Sconto aggiuntivo' : 'Ricarico aggiuntivo';
         
@@ -546,19 +569,59 @@
 
     function cancellaTutto() {
         document.getElementById('prezzoBase').value = "";
-        inizializzaInputPrincipale();
+        if (modalitaCorrente === 'scopri') {
+            document.getElementById('prezzoFinaleInput').value = "";
+        } else {
+            inizializzaCampiDinamici();
+        }
         document.getElementById('resultBox').style.display = 'none';
     }
 
     function eseguiCalcolo() {
         const base = parseFloat(document.getElementById('prezzoBase').value);
-        const inputs = document.querySelectorAll('.percentuale-input');
+        const formattatore = new Intl.NumberFormat('it-IT', { style: 'currency', currency: 'EUR' });
         
-        if (isNaN(base)) {
-            alert(modalitaCorrente === 'sconto' ? "Inserisci un prezzo di listino valido." : "Inserisci un prezzo base valido.");
+        if (isNaN(base) || base <= 0) {
+            alert("Inserisci un prezzo iniziale valido superiore a 0.");
             return;
         }
 
+        // LOGICA PER MODALITÀ INVERSA: SCOPRI LO SCONTO
+        if (modalitaCorrente === 'scopri') {
+            const finale = parseFloat(document.getElementById('prezzoFinaleInput').value);
+            if (isNaN(finale) || finale < 0) {
+                alert("Inserisci un prezzo scontato finale valido.");
+                return;
+            }
+            if (finale > base) {
+                alert("Il prezzo finale non può essere maggiore del prezzo di listino!");
+                return;
+            }
+
+            const risparmioEuro = base - finale;
+            // Calcolo percentuale inversa
+            const percentualeSconto = (risparmioEuro / base) * 100;
+            
+            // Formatta a max 2 decimali se presenti (es. 50% o 33,33%)
+            const percFormattata = parseFloat(percentualeSconto.toFixed(2)).toLocaleString('it-IT') + "%";
+
+            document.getElementById('resLabelIniziale').innerText = "Prezzo di listino:";
+            document.getElementById('resValueIniziale').innerText = formattatore.format(base);
+            
+            document.getElementById('resLabelVariazione').innerText = "Risparmio in €:";
+            document.getElementById('resValueVariazione').innerText = "-" + formattatore.format(risparmioEuro);
+            
+            document.getElementById('resLabelFinale').innerText = "Sconto Effettivo:";
+            document.getElementById('resValueFinale').innerText = percFormattata;
+            
+            document.getElementById('resultBox').style.display = 'block';
+
+            salvaInCronologia(formattatore.format(base), formattatore.format(finale), percFormattata);
+            return;
+        }
+
+        // LOGICA PER SCONTO E RICARICO STANDARD
+        const inputs = document.querySelectorAll('.percentuale-input');
         let percentualiApplicate = [];
         let valoreCorrente = base;
 
@@ -581,8 +644,8 @@
         }
 
         const variazioneTotale = Math.abs(base - valoreCorrente);
-        const formattatore = new Intl.NumberFormat('it-IT', { style: 'currency', currency: 'EUR' });
 
+        document.getElementById('resLabelFinale').innerText = "Prezzo finale:";
         if (modalitaCorrente === 'sconto') {
             document.getElementById('resLabelIniziale').innerText = "Listino iniziale:";
             document.getElementById('resLabelVariazione').innerText = "Risparmio Totale:";
@@ -600,36 +663,57 @@
         salvaInCronologia(formattatore.format(base), percentualiApplicate.join(" "), formattatore.format(valoreCorrente));
     }
 
-    function salvaInCronologia(inizio, variazioni, fine) {
-        const elemento = { inizio, variazioni, fine };
-        let crono = modalitaCorrente === 'sconto' ? cronologiaSconto : cronologiaRicarico;
+    function salvaInCronologia(param1, param2, param3) {
+        const elemento = { param1, param2, param3 };
+        let storageKey = 'combo_cronologia' + modalitaCorrente.charAt(0).toUpperCase() + modalitaCorrente.slice(1);
+        
+        let crono = [];
+        if (modalitaCorrente === 'sconto') crono = cronologiaSconto;
+        else if (modalitaCorrente === 'ricarico') crono = cronologiaRicarico;
+        else if (modalitaCorrente === 'scopri') crono = cronologiaScopri;
         
         crono.unshift(elemento);
         if (crono.length > 4) crono.pop();
 
-        localStorage.setItem('combo_cronologia' + (modalitaCorrente === 'sconto' ? 'Sconto' : 'Ricarico'), JSON.stringify(crono));
+        localStorage.setItem(storageKey, JSON.stringify(crono));
         aggiornaGraficaCronologia();
     }
 
     function aggiornaGraficaCronologia() {
         const container = document.getElementById('historyContainer');
-        let crono = modalitaCorrente === 'sconto' ? cronologiaSconto : cronologiaRicarico;
+        let crono = [];
+        
+        if (modalitaCorrente === 'sconto') crono = cronologiaSconto;
+        else if (modalitaCorrente === 'ricarico') crono = cronologiaRicarico;
+        else if (modalitaCorrente === 'scopri') crono = cronologiaScopri;
 
         if (crono.length === 0) {
             container.innerHTML = `<div style="font-size:12px; color:gray; font-style:italic;">Nessun calcolo recente</div>`;
             return;
         }
 
-        const congiunzione = modalitaCorrente === 'sconto' ? 'sconto' : 'ricarico';
-
-        container.innerHTML = crono.map(item => `
-            <div class="history-item">
-                <div class="history-details">
-                    <div><strong>${item.inizio}</strong> con ${congiunzione} ${item.variazioni}</div>
-                </div>
-                <div class="history-final">${item.fine}</div>
-            </div>
-        `).join('');
+        container.innerHTML = crono.map(item => {
+            if (modalitaCorrente === 'scopri') {
+                return `
+                    <div class="history-item">
+                        <div class="history-details">
+                            <div>Da <strong>${item.param1}</strong> a <strong>${item.param2}</strong></div>
+                        </div>
+                        <div class="history-final">${item.param3} di sconto</div>
+                    </div>
+                `;
+            } else {
+                const congiunzione = modalitaCorrente === 'sconto' ? 'sconto' : 'ricarico';
+                return `
+                    <div class="history-item">
+                        <div class="history-details">
+                            <div><strong>${item.param1}</strong> con ${congiunzione} ${item.param2}</div>
+                        </div>
+                        <div class="history-final">${item.param3}</div>
+                    </div>
+                `;
+            }
+        }).join('');
     }
 </script>
 
